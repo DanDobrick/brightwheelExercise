@@ -27,7 +27,7 @@ I've also provided a linter (using [Rubocop](https://www.rubocop.org/en/stable/)
 ```bash
 make lint
 ```
-and a test runner (TESTS COMING SOON):
+and a test runner:
 ```bash
 make test
 ```
@@ -41,3 +41,7 @@ If you would rather not use the makefile provided, you can install the dependenc
 ```
 
 Then to run the server at `localhost:9292` run `bundle exec rackup`.
+
+## Technical Decisions
+
+## Tradeoffs and Future considerations
