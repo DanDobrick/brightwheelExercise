@@ -1,0 +1,64 @@
+# Reasonable maxes
+Metrics/AbcSize:
+  Max: 30
+
+Metrics/LineLength:
+  Max: 128
+
+Metrics/ModuleLength:
+  Max: 200
+
+Metrics/CyclomaticComplexity:
+  Max: 9
+
+Metrics/PerceivedComplexity:
+  Max: 9
+
+Metrics/ClassLength:
+  Max: 350
+
+Style/ClassVars:
+  Enabled: false
+
+Style/SignalException:
+  EnforcedStyle: semantic
+
+Metrics/MethodLength:
+  Max: 30
+
+Style/Documentation:
+  Enabled: false
+
+Style/Next:
+  Enabled: false
+
+# Extra lines can enhance readability
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+Style/GlobalVars:
+  Enabled: false
+
+Style/EachWithObject:
+  Enabled: false
+
+Style/ModuleFunction:
+  Enabled: false
+
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/DoubleNegation:
+  Enabled: false
+
+Metrics/BlockLength:
+  ExcludedMethods:
+    - describe
+    - context
