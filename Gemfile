@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'dotenv'
+gem 'html2text'
 gem 'httparty'
 gem 'rack-contrib'
 gem 'sinatra'
