@@ -17,8 +17,15 @@ class EmailApplication < Sinatra::Base
       end
     end
 
-    body = JSON.parse(request.body.read)
+    body = JSON.parse(request.body.read, symbolize_names: true)
 
-    return { body: body }.to_json
+    email_constant = ENV.fetch('EMAIL_PROVIDER', 'sendgrid').capitalize
+    email = Object.const_get("#{email_constant}Email").new(body)
+
+    # TODO: Error handling
+    response = email.send
+
+    status response.code
+    return { body: 'created' }.to_json
   end
 end

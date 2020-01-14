@@ -13,4 +13,4 @@ Bundler.require(:default, ENV['RACK_ENV'])
 
 Dir[File.expand_path 'api/**/*.rb'].each { |f| require_relative(f) }
 
-run EmailAppliction
+run EmailApplication
