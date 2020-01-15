@@ -7,6 +7,9 @@
 class Email
   include HTTParty
 
+  attr_reader :body, :options, :payload
+  attr_accessor :endpoint
+
   ##
   # Initialize object and convert HTML in body to plaintext
   #
@@ -24,23 +27,18 @@ class Email
     @from_name = from_name
     @subject = subject
     @body = Html2Text.convert(body)
+    @endpoint = nil
+    @options = {}
+    @payload = ''
   end
 
   ##
-  # Sends email to email provider
+  # Sends email to email provider; options provided by child class
   # @return HTTParty::Response
   ##
   def send
-    self.class.post(email_endpoint, body: payload.to_json, headers: headers)
-  end
+    fail Exceptions::EmailEndpointNotSet unless @endpoint
 
-  private
-
-  ##
-  # Defines generic headers for requests
-  # @return Hash
-  ##
-  def headers
-    auth_headers.merge('Content-Type': 'application/json')
+    self.class.post(@endpoint, body: @payload, **@options)
   end
 end
