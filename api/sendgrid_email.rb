@@ -6,26 +6,42 @@
 ##
 class SendgridEmail < Email
   ##
-  # Endpoint to send Email request to
-  # @return String
+  # Initialize new instance of class and set email endpoint, options and payload
+  # @param to [String]        Email address to send to
+  # @param to_name [String]   Name of recipent
+  # @param from [String]      Email of sender
+  # @param from_name [String] Name of sender
+  # @param subject [String]   Email subject
+  # @param body [String]      Email body
   ##
-  def email_endpoint
-    ENV.fetch('SENDGRID_EMAIL_ENDPOINT')
+  def initialize(**args)
+    super(**args)
+
+    @endpoint = ENV.fetch('SENDGRID_EMAIL_ENDPOINT')
+    @options = request_options
+    @payload = email_payload
   end
 
+  private
+
   ##
-  # Sendgrid auth headers containing API key
+  # Options for Sendgrid emails; includes auth headers
   # @return Hash
   ##
-  def auth_headers
-    { authorization: "Bearer #{ENV.fetch('SENDGRID_API_KEY')}" }
+  def request_options
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: "Bearer #{ENV.fetch('SENDGRID_API_KEY')}"
+      }
+    }
   end
 
   ##
   # Sendgrid specific email payload
   # @return Hash
   ##
-  def payload
+  def email_payload
     {
       personalizations: [
         {
@@ -46,6 +62,6 @@ class SendgridEmail < Email
           value: @body
         }
       ]
-    }
+    }.to_json
   end
 end
