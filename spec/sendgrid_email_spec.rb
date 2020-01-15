@@ -17,41 +17,41 @@ describe SendgridEmail do
     )
   end
 
-  describe '#initialize' do
-    let(:expected_body) {"Your Bill\n\n$10" }
-    let(:expected_options) do
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: 'Bearer hunter2'
+  let(:expected_body) { "Your Bill\n\n$10" }
+  let(:expected_options) do
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: 'Bearer hunter2'
+      }
+    }
+  end
+
+  let(:expected_payload) do
+    {
+      personalizations: [
+        {
+          to: [
+            email: 'foo@example.com',
+            name: 'Foo Bar'
+          ]
         }
-      }
-    end
+      ],
+      from: {
+        email: 'from@example.com',
+        name: 'From Example'
+      },
+      subject: 'subject',
+      content: [
+        {
+          type: 'text/plain',
+          value: expected_body
+        }
+      ]
+    }
+  end
 
-    let(:expected_payload) do
-      {
-        personalizations: [
-          {
-            to: [
-              email: 'foo@example.com',
-              name: 'Foo Bar'
-            ]
-          }
-        ],
-        from: {
-          email: 'from@example.com',
-          name: 'From Example'
-        },
-        subject: 'subject',
-        content: [
-          {
-            type: 'text/plain',
-            value: expected_body
-          }
-        ]
-      }
-    end
-
+  describe '#initialize' do
     it 'converts HTML to text in the body' do
       expect(sendgrid_email.body).to eq(expected_body)
     end
@@ -66,6 +66,18 @@ describe SendgridEmail do
 
     it 'sets proper payload' do
       expect(sendgrid_email.payload).to eq(expected_payload.to_json)
+    end
+  end
+
+  describe '#send' do
+    it 'sends proper payload and headers to expected url' do
+      expect(described_class).to receive(:post).with(
+        'foo.example.com',
+        body: expected_payload.to_json,
+        headers: expected_options[:headers]
+      )
+
+      sendgrid_email.send
     end
   end
 end

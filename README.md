@@ -48,7 +48,10 @@ This application is using the `.env` pattern. Simply copy the `.env.example` and
 cp .env.example .env
 ```
 
-The Mailgun and Sendgrid URLs are already copied over, but you'll need to fill out the API keys for each service.
+The Mailgun and Sendgrid URLs are already copied over, but you'll need to fill out other information:
+1) MAILGUN_API_KEY
+2) MAILGUN_DOMAIN_NAME
+3) SENDGRID_API_KEY
 
 ## Usage
 
@@ -65,3 +68,4 @@ Simple HTTP library that makes it easy to make requests and parse output. If we 
 
 ## Tradeoffs and Future considerations
 - More parameter validation on the to/from emails
+- Standardize the response codes for success, Sendgrid gives a `202` and Mailgun gives a `200` on success
