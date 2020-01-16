@@ -1,7 +1,5 @@
 # Brightwheel Platform Engineering Exercise
 
- Dependencies and installation
-
 ## Dependencies
 ### Dependencies that need to be manually installed
 - Ruby v2.6.3+
@@ -44,6 +42,7 @@ Then to run the server at `localhost:9292` run `bundle exec rackup`.
 
 ### Envs
 This application is using the `.env` pattern. Simply copy the `.env.example` and fill out the details inside:
+
 ```bash
 cp .env.example .env
 ```
@@ -54,6 +53,31 @@ The Mailgun and Sendgrid URLs are already copied over, but you'll need to fill o
 3) SENDGRID_API_KEY
 
 ## Usage
+Make sure the service is standing up using either `make run` and POST to `localhost:9393`
+
+example CURL:
+```bash
+curl --location --request POST 'localhost:9292/email' \
+--header 'Content-Type: application/json' \
+--data-raw ' {
+  "to": "fake@email.com",
+  "to_name": "Mr. Fake",
+  "from": "noreply@mybrightwheel.com",
+  "from_name": "Brightwheel",
+  "subject": "A Message from Brighwheel",
+  "body": "<h1>Your Bill</h><p>$10</p>"
+}'
+```
+
+Example response:
+```json
+{
+    "response": "Email queued for sending"
+}
+```
+
+### Selecting an email provider
+Change the ENV `sendgrid` or `mailgun` to use the selected mail provider. Capitalization does not matter; the API will automatically select the correct service to use.
 
 ## Technical Decisions
 
@@ -61,11 +85,29 @@ The Mailgun and Sendgrid URLs are already copied over, but you'll need to fill o
 In short, I'm most familiar with Ruby and wanted to spend more time writing good code + test rather than learning a new tool, language or working with something I have less experience with.
 
 ## Sinatra
-I decided to use Sinatra instead of Rails since this was a light-weight project not requiring much of Rails feature set. If we decided this would be the extent of the application I would suggest keeping Sinatra and possibly deploying the app to something like AWS lambda; if we wanted to increase the number of features I might suggest moving to Rails since there _are_ more features and a larger amount of support.
+I decided to use Sinatra instead of Rails since this was a light-weight project not requiring much of Rails feature set. If we decided this would be the extent of the application I would suggest possibly deploying the app to something like AWS lambda; if we wanted to increase the number of features I might suggest moving to Rails since there _are_ more features and a larger amount of support.
 
 ## HttParty
-Simple HTTP library that makes it easy to make requests and parse output. If we needed multi-threading or something that has more performance I would use something like `HTTP.rb` but HTTPart works fine for something like this task.
+Simple HTTP library that makes it easy to make requests and parse output. If we needed multi-threading or something that has more performance I would use something like `HTTP.rb` but HTTParty works fine for something like this task.
+
+## html2text
+Although the library doesn't have many stars of github, it had been updated recently, did the job and didn't have anything glaring when I looked at the source code. I did _not_ want to code this one by hand!
+
+## sinatra-validation
+It was a sinatra-specific parameter validator that used [dry-validation](https://github.com/dry-rb/dry-validation) which is respected ruby validation library. `sinatara-validation` also seemed easy to use and had been updated recently.
 
 ## Tradeoffs and Future considerations
+If I had more time I would add the following features:
+
+- Happy path `app.rb` tests
+  - I was having a problem with the combination of `rack-test`, `sinatra-validation` and a POST body that contained `body` as a key. I was unable to convince `sinatra-validation` that yes, the keys were truly there. Everything worked when testing it locally, but I already spent too much time wrestling with those tests so I decided to stop working on them for the purposes of this challenge.
+  - I outlined the beginning of what I would test in `app_spec.rb` using pending tests and I would add more as I went along.
 - More parameter validation on the to/from emails
-- Standardize the response codes for success, Sendgrid gives a `202` and Mailgun gives a `200` on success
+  - Ensure that the email coming in is formatted correctly and possibly do an `mx` record lookup before sending the payload to the email service.
+  - Doing this will limit the number of requests to our service (possibly saving money) as well as limit the network connections (and therefore response time) when a user is providing a bogus email address
+- Create `shared_examples` in the spec files for some of the shared behavior.
+  - I think you should always strive for DRY-ness, even in testing files.
+- Add failover; if one mail provider is down, automatically failover to other provider.
+  - Obviously this is something that is out of scope for this request, but in a real-life scenario I would suggest having one provider failover to the other in event of downtime.
+- Custom Error handling/retry logic
+  - Even if we are not failing over, it would be a good idea to have retry logic for certain status codes in order to protect against "blips" in the 3rd party systems.
