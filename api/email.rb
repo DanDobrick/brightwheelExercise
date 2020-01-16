@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ##
-# Email is the parent class for both Sendgrid and Mailgun email classes. Handles HTTP requests and HTML stripping
+# Email is the parent class for both Sendgrid and Mailgun email classes. Handles making HTTP requests and HTML stripping
 # @author[DanDobrick]
 ##
 class Email
@@ -13,12 +13,13 @@ class Email
   ##
   # Initialize object and convert HTML in body to plaintext
   #
-  # @param to [String]        Email address to send to
+  # @param to [String]        Email of recipent
   # @param to_name [String]   Name of recipent
   # @param from [String]      Email of sender
   # @param from_name [String] Name of sender
   # @param subject [String]   Email subject
   # @param body [String]      Email body
+  # @return [Email]
   ##
   def initialize(to:, to_name:, from:, from_name:, subject:, body:)
     @to = to

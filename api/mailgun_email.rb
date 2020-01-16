@@ -7,13 +7,14 @@
 class MailgunEmail < Email
 
   ##
-  # Initialize new instance of class and set email endpoint, options and payload
-  # @param to [String]        Email address to send to
+  # Initialize new instance of MailgunEmail and set email endpoint, options and payload
+  # @param to [String]        Email of recipent
   # @param to_name [String]   Name of recipent
   # @param from [String]      Email of sender
   # @param from_name [String] Name of sender
   # @param subject [String]   Email subject
   # @param body [String]      Email body
+  # @return [MailgunEmail]
   ##
   def initialize(**args)
     super(**args)
