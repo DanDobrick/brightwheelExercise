@@ -51,6 +51,10 @@ describe SendgridEmail do
     }
   end
 
+  let(:mock_response) do
+    OpenStruct.new(parsed_response: { body: 'foobar' }, code: 412)
+  end
+
   describe '#initialize' do
     it 'converts HTML to text in the body' do
       expect(sendgrid_email.body).to eq(expected_body)
@@ -75,7 +79,7 @@ describe SendgridEmail do
         'foo.example.com',
         body: expected_payload.to_json,
         headers: expected_options[:headers]
-      )
+      ).and_return(mock_response)
 
       sendgrid_email.send
     end

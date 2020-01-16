@@ -34,11 +34,15 @@ class Email
 
   ##
   # Sends email to email provider; options provided by child class
-  # @return HTTParty::Response
+  # @return ::Response
   ##
   def send
     fail Exceptions::EmailEndpointNotSet unless @endpoint
 
-    self.class.post(@endpoint, body: @payload, **@options)
+    response = self.class.post(@endpoint, body: @payload, **@options)
+
+    # Ideally this would be namespaced to prevent collisions, but for the purposes of this exercise
+    # I decided to use the '::' operator
+    ::Response.new(body: response.parsed_response, status_code: response.code)
   end
 end
