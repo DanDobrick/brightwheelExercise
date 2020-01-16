@@ -26,6 +26,6 @@ class EmailApplication < Sinatra::Base
     response = email.send
 
     status response.code
-    return { body: 'created' }.to_json
+    return response.body.to_json
   end
 end

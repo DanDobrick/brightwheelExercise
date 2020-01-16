@@ -42,7 +42,11 @@ describe MailgunEmail do
     }
   end
 
-  let(:constructed_email_endpoint) { "base.example.com/my-custom.domain/email-endpoint" }
+  let(:constructed_email_endpoint) { 'base.example.com/my-custom.domain/email-endpoint' }
+
+  let(:mock_response) do
+    OpenStruct.new(parsed_response: { body: 'foobar' }, code: 412)
+  end
 
   describe '#initialize' do
     it 'converts HTML to text in the body' do
@@ -69,7 +73,7 @@ describe MailgunEmail do
         body: expected_payload,
         headers: expected_options[:headers],
         basic_auth: expected_options[:basic_auth]
-      )
+      ).and_return(mock_response)
 
       mailgun_email.send
     end

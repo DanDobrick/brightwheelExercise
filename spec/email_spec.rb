@@ -12,6 +12,10 @@ describe Email do
     )
   end
 
+  let(:mock_response) do
+    OpenStruct.new(parsed_response: { body: 'foobar' }, code: 412)
+  end
+
   describe '#initialize' do
     it 'converts HTML to text in the body' do
       expected_body = "Your Bill\n\n$10"
@@ -33,9 +37,23 @@ describe Email do
         expect(described_class).to receive(:post).with(
           'example.com',
           body: ''
-        )
+        ).and_return(mock_response)
 
         email.send
+      end
+
+      it 'returns object with proper status code' do
+        allow(described_class).to receive(:post).and_return(mock_response)
+
+        response = email.send
+        expect(response.code).to eq(mock_response.code)
+      end
+
+      it 'returns object with proper body' do
+        allow(described_class).to receive(:post).and_return(mock_response)
+
+        response = email.send
+        expect(response.body).to eq(mock_response.parsed_response)
       end
     end
   end
